@@ -19,20 +19,21 @@
     <div id="status-bar">
       <span id="connection-indicator"></span>
       <span>Conectado</span>
+      <button id="calibrate-btn">Calibrar</button>
     </div>
     <div id="gyro-debug">
       <div>β: <span id="beta-val">0</span>°</div>
       <div>γ: <span id="gamma-val">0</span>°</div>
       <div id="debug-status">Estado: iniciando...</div>
     </div>
-    <div id="aim-area">
-      <div id="aim-dot"></div>
-      <p>Arrastra para apuntar (fallback)</p>
-    </div>
-    <button id="shoot-btn">DISPARAR</button>
     <p id="gyro-warning" class="hidden">
       Permite el acceso al sensor de movimiento
     </p>
+    <div id="aim-area">
+      <div id="aim-dot"></div>
+      <p>Mueve el teléfono o arrastra aquí</p>
+    </div>
+    <button id="shoot-btn">DISPARAR</button>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
