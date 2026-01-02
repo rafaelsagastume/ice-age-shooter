@@ -705,198 +705,278 @@ function createTRex() {
   const dino = new THREE.Group();
   dino.userData.type = 'trex';
 
-  // Colores más realistas de reptil
-  const skinColor = 0x3d4a32;
-  const bellyColor = 0x5a6b4a;
-  const darkColor = 0x2a3322;
-
+  // Materiales realistas
   const skinMat = new THREE.MeshStandardMaterial({
-    color: skinColor,
-    roughness: 0.9,
-    metalness: 0.1,
-    flatShading: true
+    color: 0x4a5a3a,
+    roughness: 0.85,
+    metalness: 0.05
   });
   const bellyMat = new THREE.MeshStandardMaterial({
-    color: bellyColor,
-    roughness: 0.85
+    color: 0x6a7a5a,
+    roughness: 0.8
   });
   const darkMat = new THREE.MeshStandardMaterial({
-    color: darkColor,
-    roughness: 0.95,
-    flatShading: true
+    color: 0x2a3a22,
+    roughness: 0.9
   });
 
-  // Cuerpo principal
-  const body = new THREE.Mesh(
-    new THREE.SphereGeometry(1.8, 12, 10),
+  // ===== CUERPO (torso) =====
+  const torso = new THREE.Group();
+
+  const bodyMain = new THREE.Mesh(
+    new THREE.SphereGeometry(1.6, 16, 12),
     skinMat
   );
-  body.scale.set(1, 0.85, 1.4);
-  body.position.set(0, 2.5, 0);
-  body.castShadow = true;
-  dino.add(body);
+  bodyMain.scale.set(1.1, 0.9, 1.5);
+  torso.add(bodyMain);
 
-  // Panza
   const belly = new THREE.Mesh(
-    new THREE.SphereGeometry(1.4, 10, 8),
+    new THREE.SphereGeometry(1.3, 12, 10),
     bellyMat
   );
-  belly.scale.set(0.8, 0.7, 1);
-  belly.position.set(0, 2.2, 0.5);
-  dino.add(belly);
+  belly.scale.set(0.9, 0.75, 1.1);
+  belly.position.set(0, -0.3, 0.4);
+  torso.add(belly);
 
-  // Cabeza
-  const head = new THREE.Mesh(
-    new THREE.BoxGeometry(1.4, 1.2, 2),
-    skinMat.clone()
-  );
-  head.position.set(0, 4, 2);
-  head.castShadow = true;
-  dino.add(head);
+  torso.position.set(0, 2.8, 0);
+  dino.add(torso);
 
-  // Mandíbula superior
-  const upperJaw = new THREE.Mesh(
-    new THREE.BoxGeometry(1.2, 0.4, 1.5),
-    skinMat.clone()
-  );
-  upperJaw.position.set(0, 3.8, 3);
-  dino.add(upperJaw);
-
-  // Mandíbula inferior
-  const lowerJaw = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 0.35, 1.3),
-    skinMat.clone()
-  );
-  lowerJaw.position.set(0, 3.3, 2.8);
-  dino.add(lowerJaw);
-
-  // Dientes GRANDES Y AMENAZANTES
-  const toothMat = new THREE.MeshStandardMaterial({
-    color: 0xfffff0,
-    emissive: 0x222211,
-    emissiveIntensity: 0.1
-  });
-  // Dientes superiores
-  for (let i = 0; i < 10; i++) {
-    const tooth = new THREE.Mesh(
-      new THREE.ConeGeometry(0.1, 0.4 + Math.random() * 0.15, 4),
-      toothMat
-    );
-    tooth.position.set(-0.5 + i * 0.11, 3.5, 3.5);
-    tooth.rotation.x = Math.PI;
-    dino.add(tooth);
-  }
-  // Dientes inferiores
-  for (let i = 0; i < 8; i++) {
-    const tooth = new THREE.Mesh(
-      new THREE.ConeGeometry(0.08, 0.3, 4),
-      toothMat
-    );
-    tooth.position.set(-0.4 + i * 0.11, 3.35, 3.3);
-    dino.add(tooth);
-  }
-
-  // Ojos FEROCES con brillo rojo
-  const eyeMat = new THREE.MeshStandardMaterial({
-    color: 0xff3300,
-    emissive: 0xff0000,
-    emissiveIntensity: 0.8
-  });
-  const pupilMat = new THREE.MeshStandardMaterial({ color: 0x000000 });
-
-  [-0.5, 0.5].forEach(side => {
-    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.22, 12, 12), eyeMat);
-    eye.position.set(side, 4.3, 2.8);
-    dino.add(eye);
-
-    const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), pupilMat);
-    pupil.position.set(side, 4.3, 3);
-    dino.add(pupil);
-  });
-
-  // Brazos pequeños
-  [-0.9, 0.9].forEach(side => {
-    const arm = new THREE.Mesh(
-      new THREE.CapsuleGeometry(0.15, 0.6, 4, 8),
-      skinMat
-    );
-    arm.position.set(side, 2.8, 1.2);
-    arm.rotation.z = side > 0 ? -0.6 : 0.6;
-    arm.rotation.x = 0.3;
-    arm.castShadow = true;
-    dino.add(arm);
-  });
-
-  // Piernas
-  [-0.6, 0.6].forEach(side => {
-    const leg = new THREE.Mesh(
-      new THREE.CapsuleGeometry(0.35, 1.8, 4, 8),
-      skinMat
-    );
-    leg.position.set(side, 1, 0);
-    leg.castShadow = true;
-    dino.add(leg);
-
-    // Pie
-    const foot = new THREE.Mesh(
-      new THREE.BoxGeometry(0.5, 0.2, 0.8),
-      skinMat
-    );
-    foot.position.set(side, 0.1, 0.3);
-    dino.add(foot);
-  });
-
-  // Cola
-  const tailCurve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0, 2.5, -1),
-    new THREE.Vector3(0, 2.8, -2.5),
-    new THREE.Vector3(0, 3, -4),
-    new THREE.Vector3(0, 2.5, -5)
-  ]);
-  const tail = new THREE.Mesh(
-    new THREE.TubeGeometry(tailCurve, 15, 0.4, 8, false),
+  // ===== CUELLO (articulado) =====
+  const neck = new THREE.Group();
+  const neckMesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.5, 0.7, 1.5, 10),
     skinMat
   );
-  tail.castShadow = true;
-  dino.add(tail);
+  neckMesh.rotation.x = -0.5;
+  neck.add(neckMesh);
+  neck.position.set(0, 3.2, 1.2);
+  dino.add(neck);
+  dino.userData.neck = neck;
 
-  // Escamas/crestas en la espalda (más realistas)
-  for (let i = 0; i < 10; i++) {
-    const spike = new THREE.Mesh(
-      new THREE.ConeGeometry(0.12 + i * 0.02, 0.3 + Math.sin(i * 0.8) * 0.15, 4),
-      darkMat.clone()
+  // ===== CABEZA (articulada) =====
+  const head = new THREE.Group();
+
+  // Cráneo
+  const skull = new THREE.Mesh(
+    new THREE.BoxGeometry(1.3, 1.1, 1.8),
+    skinMat
+  );
+  skull.position.set(0, 0, 0.5);
+  head.add(skull);
+
+  // Hocico superior
+  const snout = new THREE.Mesh(
+    new THREE.BoxGeometry(1.1, 0.5, 1.4),
+    skinMat
+  );
+  snout.position.set(0, -0.2, 1.5);
+  head.add(snout);
+
+  // Cejas prominentes
+  [-0.4, 0.4].forEach(side => {
+    const brow = new THREE.Mesh(
+      new THREE.BoxGeometry(0.4, 0.25, 0.5),
+      darkMat
     );
-    spike.position.set(0, 3.3 + Math.sin(i * 0.4) * 0.15, -0.3 - i * 0.5);
+    brow.position.set(side, 0.5, 0.3);
+    head.add(brow);
+  });
+
+  // Ojos feroces
+  const eyeMat = new THREE.MeshStandardMaterial({
+    color: 0xff4400,
+    emissive: 0xff2200,
+    emissiveIntensity: 0.6
+  });
+  [-0.45, 0.45].forEach(side => {
+    const eyeSocket = new THREE.Mesh(
+      new THREE.SphereGeometry(0.2, 8, 8),
+      new THREE.MeshStandardMaterial({ color: 0x111111 })
+    );
+    eyeSocket.position.set(side, 0.3, 0.7);
+    head.add(eyeSocket);
+
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.15, 10, 10), eyeMat);
+    eye.position.set(side, 0.3, 0.8);
+    head.add(eye);
+
+    const pupil = new THREE.Mesh(
+      new THREE.SphereGeometry(0.06, 6, 6),
+      new THREE.MeshStandardMaterial({ color: 0x000000 })
+    );
+    pupil.position.set(side, 0.3, 0.92);
+    head.add(pupil);
+  });
+
+  head.position.set(0, 4, 2.2);
+  dino.add(head);
+  dino.userData.head = head;
+
+  // ===== MANDÍBULA INFERIOR (articulada) =====
+  const jaw = new THREE.Group();
+  const jawMesh = new THREE.Mesh(
+    new THREE.BoxGeometry(0.9, 0.4, 1.3),
+    skinMat
+  );
+  jaw.add(jawMesh);
+
+  // Dientes inferiores
+  const toothMat = new THREE.MeshStandardMaterial({ color: 0xfffff5 });
+  for (let i = 0; i < 8; i++) {
+    const tooth = new THREE.Mesh(
+      new THREE.ConeGeometry(0.06, 0.25, 4),
+      toothMat
+    );
+    tooth.position.set(-0.35 + i * 0.1, 0.22, 0.3 + Math.sin(i) * 0.1);
+    jaw.add(tooth);
+  }
+
+  jaw.position.set(0, 3.4, 3);
+  dino.add(jaw);
+  dino.userData.jaw = jaw;
+
+  // Dientes superiores (en la cabeza)
+  for (let i = 0; i < 10; i++) {
+    const tooth = new THREE.Mesh(
+      new THREE.ConeGeometry(0.08, 0.35 + Math.random() * 0.1, 4),
+      toothMat
+    );
+    tooth.position.set(-0.45 + i * 0.1, -0.4, 1.8);
+    tooth.rotation.x = Math.PI;
+    head.add(tooth);
+  }
+
+  // ===== BRAZOS (articulados) =====
+  [-1, 1].forEach((side, idx) => {
+    const armGroup = new THREE.Group();
+
+    // Brazo superior
+    const upperArm = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.12, 0.4, 6, 8),
+      skinMat
+    );
+    upperArm.rotation.z = side * 0.3;
+    armGroup.add(upperArm);
+
+    // Antebrazo
+    const forearm = new THREE.Group();
+    const forearmMesh = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.1, 0.35, 6, 8),
+      skinMat
+    );
+    forearm.add(forearmMesh);
+
+    // Garras
+    for (let i = 0; i < 2; i++) {
+      const claw = new THREE.Mesh(
+        new THREE.ConeGeometry(0.04, 0.15, 4),
+        darkMat
+      );
+      claw.position.set(-0.05 + i * 0.1, -0.25, 0);
+      claw.rotation.x = 0.3;
+      forearm.add(claw);
+    }
+
+    forearm.position.set(0, -0.35, 0);
+    forearm.rotation.z = side * 0.4;
+    armGroup.add(forearm);
+
+    armGroup.position.set(side * 0.9, 2.8, 1);
+    dino.add(armGroup);
+    dino.userData[idx === 0 ? 'armL' : 'armR'] = armGroup;
+  });
+
+  // ===== PIERNAS (articuladas) =====
+  [-1, 1].forEach((side, idx) => {
+    const legGroup = new THREE.Group();
+
+    // Muslo
+    const thigh = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.35, 1, 8, 10),
+      skinMat
+    );
+    thigh.position.set(0, -0.3, 0);
+    legGroup.add(thigh);
+
+    // Pantorrilla
+    const shin = new THREE.Group();
+    const shinMesh = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.25, 0.9, 8, 10),
+      skinMat
+    );
+    shin.add(shinMesh);
+
+    // Pie
+    const foot = new THREE.Group();
+    const footMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(0.5, 0.2, 0.9),
+      skinMat
+    );
+    foot.add(footMesh);
+
+    // Garras del pie
+    for (let i = 0; i < 3; i++) {
+      const toeClaw = new THREE.Mesh(
+        new THREE.ConeGeometry(0.06, 0.2, 4),
+        darkMat
+      );
+      toeClaw.position.set(-0.15 + i * 0.15, -0.1, 0.5);
+      toeClaw.rotation.x = -0.3;
+      foot.add(toeClaw);
+    }
+
+    foot.position.set(0, -0.6, 0.2);
+    shin.add(foot);
+    shin.position.set(0, -0.9, 0.1);
+    legGroup.add(shin);
+    dino.userData[idx === 0 ? 'shinL' : 'shinR'] = shin;
+
+    legGroup.position.set(side * 0.6, 1.8, 0);
+    dino.add(legGroup);
+    dino.userData[idx === 0 ? 'legL' : 'legR'] = legGroup;
+  });
+
+  // ===== COLA (articulada en segmentos) =====
+  const tailSegments = [];
+  let tailParent = torso;
+
+  for (let i = 0; i < 5; i++) {
+    const segment = new THREE.Group();
+    const size = 0.5 - i * 0.08;
+    const segMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(size, 8, 6),
+      skinMat
+    );
+    segMesh.scale.set(0.8, 0.8, 1.3);
+    segment.add(segMesh);
+
+    if (i > 0) {
+      // Escamas en la cola
+      const spike = new THREE.Mesh(
+        new THREE.ConeGeometry(0.08, 0.2, 4),
+        darkMat
+      );
+      spike.position.set(0, size * 0.7, 0);
+      spike.rotation.x = -0.3;
+      segment.add(spike);
+    }
+
+    segment.position.set(0, 0, -0.7 - i * 0.05);
+    tailParent.add(segment);
+    tailSegments.push(segment);
+    tailParent = segment;
+  }
+  dino.userData.tailSegments = tailSegments;
+
+  // Escamas dorsales
+  for (let i = 0; i < 8; i++) {
+    const spike = new THREE.Mesh(
+      new THREE.ConeGeometry(0.1, 0.25, 4),
+      darkMat
+    );
+    spike.position.set(0, 3.5, -0.5 + i * -0.4);
     spike.rotation.x = -0.2;
     dino.add(spike);
-  }
-
-  // Textura de escamas en el cuerpo (protuberancias)
-  for (let i = 0; i < 15; i++) {
-    const bump = new THREE.Mesh(
-      new THREE.SphereGeometry(0.15 + Math.random() * 0.1, 4, 4),
-      darkMat
-    );
-    const angle = Math.random() * Math.PI * 2;
-    const height = 2 + Math.random() * 1.5;
-    bump.position.set(
-      Math.cos(angle) * 1.2,
-      height,
-      Math.sin(angle) * 0.8 - 0.5
-    );
-    bump.scale.y = 0.5;
-    dino.add(bump);
-  }
-
-  // Arrugas en el cuello
-  for (let i = 0; i < 3; i++) {
-    const wrinkle = new THREE.Mesh(
-      new THREE.TorusGeometry(0.5 - i * 0.1, 0.05, 4, 12),
-      darkMat
-    );
-    wrinkle.position.set(0, 3.8 - i * 0.2, 1.5);
-    wrinkle.rotation.y = Math.PI / 2;
-    dino.add(wrinkle);
   }
 
   return dino;
@@ -906,140 +986,255 @@ function createRaptor() {
   const dino = new THREE.Group();
   dino.userData.type = 'raptor';
 
-  // Colores de raptor realista (marrón con rayas)
+  // Materiales realistas
   const skinMat = new THREE.MeshStandardMaterial({
-    color: 0x6b4423,
+    color: 0x7a5533,
     roughness: 0.8,
-    metalness: 0.05,
-    flatShading: true
+    metalness: 0.05
   });
-  const stripeMat = new THREE.MeshStandardMaterial({
+  const bellyMat = new THREE.MeshStandardMaterial({
+    color: 0x9a7553,
+    roughness: 0.75
+  });
+  const darkMat = new THREE.MeshStandardMaterial({
     color: 0x3d2815,
-    roughness: 0.85,
-    flatShading: true
+    roughness: 0.85
   });
-
-  // Cuerpo esbelto
-  const body = new THREE.Mesh(
-    new THREE.CapsuleGeometry(0.6, 1.5, 8, 12),
-    skinMat
-  );
-  body.rotation.x = Math.PI / 6;
-  body.position.set(0, 1.8, 0);
-  body.castShadow = true;
-  dino.add(body);
-
-  // Cabeza alargada
-  const head = new THREE.Mesh(
-    new THREE.ConeGeometry(0.35, 1.2, 6),
-    skinMat.clone()
-  );
-  head.rotation.x = Math.PI / 2;
-  head.position.set(0, 2.5, 1.5);
-  head.castShadow = true;
-  dino.add(head);
-
-  // Ojos FEROCES del raptor
-  const eyeMat = new THREE.MeshStandardMaterial({
-    color: 0xff4400,
-    emissive: 0xff2200,
-    emissiveIntensity: 1.0
-  });
-  [-0.2, 0.2].forEach(side => {
-    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.14, 8, 8), eyeMat);
-    eye.position.set(side, 2.6, 1.8);
-    dino.add(eye);
-  });
-
-  // Piernas largas
-  [-0.3, 0.3].forEach(side => {
-    const leg = new THREE.Mesh(
-      new THREE.CapsuleGeometry(0.15, 1.2, 4, 8),
-      skinMat
-    );
-    leg.position.set(side, 0.8, -0.2);
-    leg.castShadow = true;
-    dino.add(leg);
-
-    // Garra
-    const claw = new THREE.Mesh(
-      new THREE.ConeGeometry(0.08, 0.4, 4),
-      new THREE.MeshStandardMaterial({ color: 0x333333 })
-    );
-    claw.position.set(side, 0.1, 0.1);
-    claw.rotation.x = -Math.PI / 4;
-    dino.add(claw);
-  });
-
-  // Cola larga
-  const tailCurve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0, 1.5, -0.5),
-    new THREE.Vector3(0, 1.8, -1.5),
-    new THREE.Vector3(0, 2, -2.5),
-    new THREE.Vector3(0, 1.8, -3.5)
-  ]);
-  const tail = new THREE.Mesh(
-    new THREE.TubeGeometry(tailCurve, 12, 0.15, 6, false),
-    skinMat
-  );
-  tail.castShadow = true;
-  dino.add(tail);
-
-  // Plumas realistas en la cabeza y brazos
   const featherMat = new THREE.MeshStandardMaterial({
-    color: 0xaa3300,
+    color: 0xcc4400,
     roughness: 0.7,
     side: THREE.DoubleSide
   });
 
-  // Cresta de plumas en la cabeza
-  for (let i = 0; i < 5; i++) {
-    const feather = new THREE.Mesh(
-      new THREE.PlaneGeometry(0.15, 0.4 + i * 0.05),
-      featherMat
-    );
-    feather.position.set(0, 2.7 - i * 0.08, 1.2 - i * 0.15);
-    feather.rotation.x = -0.3;
-    dino.add(feather);
-  }
+  // ===== TORSO =====
+  const torso = new THREE.Group();
+  const bodyMesh = new THREE.Mesh(
+    new THREE.CapsuleGeometry(0.5, 1.2, 10, 12),
+    skinMat
+  );
+  bodyMesh.rotation.x = 0.4;
+  torso.add(bodyMesh);
 
-  // Plumas en los brazos
-  [-0.4, 0.4].forEach(side => {
-    for (let i = 0; i < 3; i++) {
-      const feather = new THREE.Mesh(
-        new THREE.PlaneGeometry(0.2, 0.5),
-        featherMat.clone()
-      );
-      feather.position.set(side, 1.8 - i * 0.2, 0.5 - i * 0.1);
-      feather.rotation.z = side > 0 ? -0.5 : 0.5;
-      feather.rotation.x = -0.3;
-      dino.add(feather);
-    }
+  const bellyMesh = new THREE.Mesh(
+    new THREE.CapsuleGeometry(0.35, 0.8, 8, 10),
+    bellyMat
+  );
+  bellyMesh.rotation.x = 0.4;
+  bellyMesh.position.set(0, -0.1, 0.15);
+  torso.add(bellyMesh);
+
+  torso.position.set(0, 1.8, 0);
+  dino.add(torso);
+
+  // ===== CUELLO =====
+  const neck = new THREE.Group();
+  const neckMesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.15, 0.25, 0.8, 8),
+    skinMat
+  );
+  neckMesh.rotation.x = -0.6;
+  neck.add(neckMesh);
+  neck.position.set(0, 2.3, 0.8);
+  dino.add(neck);
+  dino.userData.neck = neck;
+
+  // ===== CABEZA =====
+  const head = new THREE.Group();
+
+  // Cráneo alargado
+  const skull = new THREE.Mesh(
+    new THREE.BoxGeometry(0.4, 0.35, 0.9),
+    skinMat
+  );
+  head.add(skull);
+
+  // Hocico
+  const snout = new THREE.Mesh(
+    new THREE.BoxGeometry(0.3, 0.25, 0.5),
+    skinMat
+  );
+  snout.position.set(0, -0.05, 0.6);
+  head.add(snout);
+
+  // Ojos feroces
+  const eyeMat = new THREE.MeshStandardMaterial({
+    color: 0xffaa00,
+    emissive: 0xff6600,
+    emissiveIntensity: 0.7
+  });
+  [-0.18, 0.18].forEach(side => {
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), eyeMat);
+    eye.position.set(side, 0.1, 0.25);
+    head.add(eye);
+
+    const pupil = new THREE.Mesh(
+      new THREE.SphereGeometry(0.04, 6, 6),
+      new THREE.MeshStandardMaterial({ color: 0x000000 })
+    );
+    pupil.position.set(side, 0.1, 0.33);
+    head.add(pupil);
   });
 
-  // Rayas en el cuerpo
-  for (let i = 0; i < 4; i++) {
-    const stripe = new THREE.Mesh(
-      new THREE.BoxGeometry(0.8, 0.08, 0.3),
-      stripeMat
+  // Dientes
+  const toothMat = new THREE.MeshStandardMaterial({ color: 0xfffff5 });
+  for (let i = 0; i < 6; i++) {
+    const tooth = new THREE.Mesh(
+      new THREE.ConeGeometry(0.025, 0.12, 4),
+      toothMat
     );
-    stripe.position.set(0, 1.6 + i * 0.25, -0.2 - i * 0.2);
+    tooth.position.set(-0.12 + i * 0.05, -0.15, 0.7);
+    tooth.rotation.x = Math.PI;
+    head.add(tooth);
+  }
+
+  // Cresta de plumas
+  for (let i = 0; i < 5; i++) {
+    const feather = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.08, 0.25 + i * 0.03),
+      featherMat
+    );
+    feather.position.set(0, 0.2 + i * 0.02, -0.1 - i * 0.08);
+    feather.rotation.x = -0.4;
+    head.add(feather);
+  }
+
+  head.position.set(0, 2.8, 1.4);
+  dino.add(head);
+  dino.userData.head = head;
+
+  // ===== MANDÍBULA =====
+  const jaw = new THREE.Group();
+  const jawMesh = new THREE.Mesh(
+    new THREE.BoxGeometry(0.25, 0.12, 0.6),
+    skinMat
+  );
+  jaw.add(jawMesh);
+  jaw.position.set(0, 2.6, 1.6);
+  dino.add(jaw);
+  dino.userData.jaw = jaw;
+
+  // ===== BRAZOS CON PLUMAS =====
+  [-1, 1].forEach((side, idx) => {
+    const arm = new THREE.Group();
+
+    const upperArm = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.08, 0.4, 6, 8),
+      skinMat
+    );
+    upperArm.rotation.z = side * 0.8;
+    arm.add(upperArm);
+
+    const forearm = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.06, 0.35, 6, 8),
+      skinMat
+    );
+    forearm.position.set(side * 0.25, -0.2, 0);
+    forearm.rotation.z = side * 0.5;
+    arm.add(forearm);
+
+    // Plumas del brazo
+    for (let i = 0; i < 4; i++) {
+      const feather = new THREE.Mesh(
+        new THREE.PlaneGeometry(0.15, 0.35),
+        featherMat
+      );
+      feather.position.set(side * (0.15 + i * 0.05), -0.1 - i * 0.08, 0);
+      feather.rotation.z = side * 0.3;
+      arm.add(feather);
+    }
+
+    // Garras
+    for (let i = 0; i < 3; i++) {
+      const claw = new THREE.Mesh(
+        new THREE.ConeGeometry(0.02, 0.1, 4),
+        darkMat
+      );
+      claw.position.set(side * 0.35, -0.4 + i * 0.03, -0.03 + i * 0.03);
+      claw.rotation.x = 0.5;
+      arm.add(claw);
+    }
+
+    arm.position.set(side * 0.35, 2, 0.5);
+    dino.add(arm);
+    dino.userData[idx === 0 ? 'armL' : 'armR'] = arm;
+  });
+
+  // ===== PIERNAS =====
+  [-1, 1].forEach((side, idx) => {
+    const leg = new THREE.Group();
+
+    // Muslo
+    const thigh = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.15, 0.6, 8, 10),
+      skinMat
+    );
+    leg.add(thigh);
+
+    // Pantorrilla
+    const shin = new THREE.Group();
+    const shinMesh = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.1, 0.7, 8, 10),
+      skinMat
+    );
+    shin.add(shinMesh);
+
+    // Pie
+    const foot = new THREE.Mesh(
+      new THREE.BoxGeometry(0.2, 0.08, 0.4),
+      skinMat
+    );
+    foot.position.set(0, -0.45, 0.15);
+    shin.add(foot);
+
+    // Garra retráctil característica
+    const bigClaw = new THREE.Mesh(
+      new THREE.ConeGeometry(0.04, 0.25, 4),
+      darkMat
+    );
+    bigClaw.position.set(0, -0.35, 0.25);
+    bigClaw.rotation.x = -0.8;
+    shin.add(bigClaw);
+
+    shin.position.set(0, -0.5, 0.1);
+    leg.add(shin);
+    dino.userData[idx === 0 ? 'shinL' : 'shinR'] = shin;
+
+    leg.position.set(side * 0.25, 1.2, -0.1);
+    dino.add(leg);
+    dino.userData[idx === 0 ? 'legL' : 'legR'] = leg;
+  });
+
+  // ===== COLA SEGMENTADA =====
+  const tailSegments = [];
+  let tailParent = torso;
+
+  for (let i = 0; i < 6; i++) {
+    const segment = new THREE.Group();
+    const size = 0.2 - i * 0.025;
+    const segMesh = new THREE.Mesh(
+      new THREE.CapsuleGeometry(size, 0.3, 6, 8),
+      skinMat
+    );
+    segMesh.rotation.x = 0.1;
+    segment.add(segMesh);
+
+    segment.position.set(0, -0.05, -0.35);
+    tailParent.add(segment);
+    tailSegments.push(segment);
+    tailParent = segment;
+  }
+  dino.userData.tailSegments = tailSegments;
+
+  // Rayas en el cuerpo
+  for (let i = 0; i < 5; i++) {
+    const stripe = new THREE.Mesh(
+      new THREE.BoxGeometry(0.6, 0.04, 0.15),
+      darkMat
+    );
+    stripe.position.set(0, 1.7 + i * 0.15, -0.1 - i * 0.1);
     stripe.rotation.x = 0.3;
     dino.add(stripe);
   }
-
-  // Garras más realistas
-  const clawMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.3 });
-  [-0.3, 0.3].forEach(side => {
-    // Garra grande característica del raptor
-    const bigClaw = new THREE.Mesh(
-      new THREE.ConeGeometry(0.06, 0.5, 4),
-      clawMat
-    );
-    bigClaw.position.set(side, 0.15, 0.3);
-    bigClaw.rotation.x = -Math.PI / 3;
-    dino.add(bigClaw);
-  });
 
   return dino;
 }
@@ -1048,156 +1243,369 @@ function createTriceratops() {
   const dino = new THREE.Group();
   dino.userData.type = 'triceratops';
 
-  // Colores realistas de triceratops
+  // Materiales realistas de triceratops
   const skinMat = new THREE.MeshStandardMaterial({
     color: 0x5a7a33,
-    roughness: 0.9,
-    metalness: 0.05,
-    flatShading: true
+    roughness: 0.85,
+    metalness: 0.05
   });
-  const detailMat = new THREE.MeshStandardMaterial({
+  const bellyMat = new THREE.MeshStandardMaterial({
+    color: 0x7a9a53,
+    roughness: 0.8
+  });
+  const darkMat = new THREE.MeshStandardMaterial({
     color: 0x3d5a22,
-    roughness: 0.95,
-    flatShading: true
+    roughness: 0.9
+  });
+  const hornMat = new THREE.MeshStandardMaterial({
+    color: 0xf5f5dc,
+    roughness: 0.6
   });
 
-  // Cuerpo grande
-  const body = new THREE.Mesh(
-    new THREE.SphereGeometry(2, 12, 10),
+  // ===== CUERPO (torso masivo) =====
+  const torso = new THREE.Group();
+
+  const bodyMain = new THREE.Mesh(
+    new THREE.SphereGeometry(2, 14, 12),
     skinMat
   );
-  body.scale.set(1.2, 0.9, 1.5);
-  body.position.set(0, 2.2, 0);
-  body.castShadow = true;
-  dino.add(body);
+  bodyMain.scale.set(1.2, 0.85, 1.4);
+  torso.add(bodyMain);
 
-  // Cabeza con cresta
-  const head = new THREE.Mesh(
-    new THREE.SphereGeometry(1, 10, 8),
-    skinMat.clone()
+  const belly = new THREE.Mesh(
+    new THREE.SphereGeometry(1.7, 12, 10),
+    bellyMat
   );
-  head.scale.set(1, 0.8, 1.2);
-  head.position.set(0, 2.5, 2.5);
-  head.castShadow = true;
-  dino.add(head);
+  belly.scale.set(1.1, 0.7, 1.2);
+  belly.position.set(0, -0.4, 0.2);
+  torso.add(belly);
 
-  // Cresta grande y detallada
-  const frill = new THREE.Mesh(
-    new THREE.CircleGeometry(1.8, 12),
-    skinMat.clone()
-  );
-  frill.material.color.setHex(0x7a9a5f);
-  frill.position.set(0, 3.4, 1.6);
-  frill.rotation.x = -0.4;
-  frill.material.side = THREE.DoubleSide;
-  dino.add(frill);
-
-  // Picos alrededor de la cresta
-  for (let i = 0; i < 10; i++) {
-    const angle = (i / 10) * Math.PI + Math.PI / 2;
-    const spike = new THREE.Mesh(
-      new THREE.ConeGeometry(0.12, 0.4, 4),
-      detailMat
-    );
-    spike.position.set(
-      Math.cos(angle) * 1.6,
-      3.4 + Math.sin(angle) * 1.2,
-      1.5
-    );
-    spike.rotation.x = -0.4;
-    spike.rotation.z = -angle + Math.PI / 2;
-    dino.add(spike);
-  }
-
-  // Textura en la cresta (manchas)
+  // Textura de escamas en el lomo
   for (let i = 0; i < 6; i++) {
-    const spot = new THREE.Mesh(
-      new THREE.CircleGeometry(0.2 + Math.random() * 0.15, 6),
-      detailMat
+    const scaleRidge = new THREE.Mesh(
+      new THREE.BoxGeometry(0.2, 0.15, 0.4),
+      darkMat
     );
-    const angle = Math.random() * Math.PI;
-    const dist = 0.5 + Math.random() * 0.8;
-    spot.position.set(
-      Math.cos(angle) * dist,
-      3.4 + Math.sin(angle) * dist * 0.8,
-      1.55
-    );
-    spot.rotation.x = -0.4;
-    dino.add(spot);
+    scaleRidge.position.set(0, 1.5, -0.8 + i * 0.4);
+    torso.add(scaleRidge);
   }
 
-  // Ojos FEROCES del triceratops
-  const eyeMat = new THREE.MeshStandardMaterial({
-    color: 0xff5500,
-    emissive: 0xff3300,
-    emissiveIntensity: 0.7
-  });
-  [-0.6, 0.6].forEach(side => {
-    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.15, 8, 8), eyeMat);
-    eye.position.set(side, 2.8, 2.8);
-    dino.add(eye);
-  });
+  torso.position.set(0, 2.2, 0);
+  dino.add(torso);
 
-  // Cuernos
-  const hornMat = new THREE.MeshStandardMaterial({ color: 0xf5f5dc });
+  // ===== CUELLO (articulado) =====
+  const neck = new THREE.Group();
+  const neckMesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.6, 0.8, 1.2, 10),
+    skinMat
+  );
+  neckMesh.rotation.x = -0.3;
+  neck.add(neckMesh);
+  neck.position.set(0, 2.6, 1.8);
+  dino.add(neck);
+  dino.userData.neck = neck;
 
-  // Cuernos grandes
-  [-0.6, 0.6].forEach(side => {
-    const horn = new THREE.Mesh(
-      new THREE.ConeGeometry(0.15, 1.5, 6),
-      hornMat
-    );
-    horn.position.set(side, 3.2, 2.8);
-    horn.rotation.x = Math.PI / 4;
-    horn.rotation.z = side > 0 ? 0.2 : -0.2;
-    dino.add(horn);
-  });
+  // ===== CABEZA (articulada) =====
+  const head = new THREE.Group();
+
+  // Cráneo
+  const skull = new THREE.Mesh(
+    new THREE.SphereGeometry(0.9, 12, 10),
+    skinMat
+  );
+  skull.scale.set(1, 0.8, 1.2);
+  head.add(skull);
+
+  // Hocico con pico
+  const snout = new THREE.Mesh(
+    new THREE.BoxGeometry(0.7, 0.5, 0.8),
+    skinMat
+  );
+  snout.position.set(0, -0.1, 0.9);
+  head.add(snout);
+
+  // Pico característico
+  const beak = new THREE.Mesh(
+    new THREE.ConeGeometry(0.35, 0.5, 4),
+    hornMat
+  );
+  beak.position.set(0, -0.2, 1.4);
+  beak.rotation.x = Math.PI / 2;
+  head.add(beak);
 
   // Cuerno nasal
   const noseHorn = new THREE.Mesh(
-    new THREE.ConeGeometry(0.12, 0.6, 6),
+    new THREE.ConeGeometry(0.12, 0.5, 6),
     hornMat
   );
-  noseHorn.position.set(0, 2.8, 3.3);
-  noseHorn.rotation.x = Math.PI / 3;
-  dino.add(noseHorn);
+  noseHorn.position.set(0, 0.3, 1.1);
+  noseHorn.rotation.x = 0.5;
+  head.add(noseHorn);
 
-  // Pico
-  const beak = new THREE.Mesh(
-    new THREE.ConeGeometry(0.4, 0.6, 4),
-    hornMat
-  );
-  beak.position.set(0, 2.2, 3.4);
-  beak.rotation.x = Math.PI / 2;
-  dino.add(beak);
-
-  // Patas
-  [[-0.8, 0.5], [0.8, 0.5], [-0.8, -1], [0.8, -1]].forEach(([x, z]) => {
-    const leg = new THREE.Mesh(
-      new THREE.CapsuleGeometry(0.35, 1.2, 4, 8),
-      skinMat
+  // Cuernos grandes sobre los ojos
+  [-0.5, 0.5].forEach(side => {
+    const hornGroup = new THREE.Group();
+    const bigHorn = new THREE.Mesh(
+      new THREE.ConeGeometry(0.12, 1.3, 6),
+      hornMat
     );
-    leg.position.set(x, 1, z);
-    leg.castShadow = true;
-    dino.add(leg);
+    bigHorn.position.y = 0.6;
+    hornGroup.add(bigHorn);
+    hornGroup.position.set(side, 0.4, 0.3);
+    hornGroup.rotation.x = 0.7;
+    hornGroup.rotation.z = side > 0 ? 0.15 : -0.15;
+    head.add(hornGroup);
   });
 
-  // Cola corta
-  const tail = new THREE.Mesh(
-    new THREE.ConeGeometry(0.5, 2, 6),
-    skinMat
+  // Ojos feroces
+  const eyeMat = new THREE.MeshStandardMaterial({
+    color: 0xff5500,
+    emissive: 0xff3300,
+    emissiveIntensity: 0.6
+  });
+  [-0.5, 0.5].forEach(side => {
+    const eyeSocket = new THREE.Mesh(
+      new THREE.SphereGeometry(0.18, 8, 8),
+      new THREE.MeshStandardMaterial({ color: 0x111111 })
+    );
+    eyeSocket.position.set(side, 0.15, 0.6);
+    head.add(eyeSocket);
+
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), eyeMat);
+    eye.position.set(side, 0.15, 0.7);
+    head.add(eye);
+
+    const pupil = new THREE.Mesh(
+      new THREE.SphereGeometry(0.05, 6, 6),
+      new THREE.MeshStandardMaterial({ color: 0x000000 })
+    );
+    pupil.position.set(side, 0.15, 0.8);
+    head.add(pupil);
+  });
+
+  head.position.set(0, 3.4, 2.6);
+  dino.add(head);
+  dino.userData.head = head;
+
+  // ===== CRESTA (frill) - parte de la cabeza pero separada para animación =====
+  const frill = new THREE.Group();
+
+  // Cresta principal
+  const frillMain = new THREE.Mesh(
+    new THREE.CircleGeometry(1.6, 14),
+    skinMat.clone()
   );
-  tail.position.set(0, 2, -2);
-  tail.rotation.x = -Math.PI / 2 + 0.3;
-  tail.castShadow = true;
-  dino.add(tail);
+  frillMain.material.color.setHex(0x7a9a5f);
+  frillMain.material.side = THREE.DoubleSide;
+  frill.add(frillMain);
+
+  // Borde de la cresta
+  const frillRim = new THREE.Mesh(
+    new THREE.RingGeometry(1.4, 1.7, 14),
+    darkMat.clone()
+  );
+  frillRim.material.side = THREE.DoubleSide;
+  frillRim.position.z = 0.01;
+  frill.add(frillRim);
+
+  // Picos alrededor de la cresta
+  for (let i = 0; i < 12; i++) {
+    const angle = (i / 12) * Math.PI + Math.PI / 2;
+    const spike = new THREE.Mesh(
+      new THREE.ConeGeometry(0.1, 0.35, 4),
+      hornMat
+    );
+    spike.position.set(
+      Math.cos(angle) * 1.55,
+      Math.sin(angle) * 1.2,
+      0.02
+    );
+    spike.rotation.z = -angle + Math.PI / 2;
+    frill.add(spike);
+  }
+
+  // Manchas decorativas en la cresta
+  for (let i = 0; i < 8; i++) {
+    const spot = new THREE.Mesh(
+      new THREE.CircleGeometry(0.15 + Math.random() * 0.12, 8),
+      darkMat
+    );
+    const ang = Math.random() * Math.PI;
+    const dist = 0.4 + Math.random() * 0.7;
+    spot.position.set(Math.cos(ang) * dist, Math.sin(ang) * dist * 0.8, 0.02);
+    frill.add(spot);
+  }
+
+  frill.position.set(0, 4.2, 1.8);
+  frill.rotation.x = -0.5;
+  dino.add(frill);
+  dino.userData.frill = frill;
+
+  // ===== PATAS DELANTERAS (articuladas) =====
+  [-1, 1].forEach((side, idx) => {
+    const legGroup = new THREE.Group();
+
+    // Hombro/muslo
+    const shoulder = new THREE.Mesh(
+      new THREE.SphereGeometry(0.4, 8, 8),
+      skinMat
+    );
+    shoulder.scale.set(1, 1.2, 1);
+    legGroup.add(shoulder);
+
+    // Parte superior de la pata
+    const upperLeg = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.28, 0.8, 6, 8),
+      skinMat
+    );
+    upperLeg.position.set(0, -0.5, 0);
+    legGroup.add(upperLeg);
+
+    // Parte inferior (articulada)
+    const lowerLeg = new THREE.Group();
+    const lowerMesh = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.22, 0.6, 6, 8),
+      skinMat
+    );
+    lowerLeg.add(lowerMesh);
+
+    // Pie con dedos
+    const foot = new THREE.Mesh(
+      new THREE.BoxGeometry(0.35, 0.15, 0.5),
+      skinMat
+    );
+    foot.position.set(0, -0.4, 0.1);
+    lowerLeg.add(foot);
+
+    // Uñas
+    for (let i = 0; i < 3; i++) {
+      const nail = new THREE.Mesh(
+        new THREE.ConeGeometry(0.04, 0.12, 4),
+        darkMat
+      );
+      nail.position.set(-0.1 + i * 0.1, -0.5, 0.3);
+      nail.rotation.x = -0.4;
+      lowerLeg.add(nail);
+    }
+
+    lowerLeg.position.set(0, -1.0, 0.1);
+    legGroup.add(lowerLeg);
+    dino.userData[idx === 0 ? 'frontLegLowerL' : 'frontLegLowerR'] = lowerLeg;
+
+    legGroup.position.set(side * 1.2, 1.8, 1.2);
+    dino.add(legGroup);
+    dino.userData[idx === 0 ? 'frontLegL' : 'frontLegR'] = legGroup;
+  });
+
+  // ===== PATAS TRASERAS (articuladas, más grandes) =====
+  [-1, 1].forEach((side, idx) => {
+    const legGroup = new THREE.Group();
+
+    // Cadera/muslo grande
+    const hip = new THREE.Mesh(
+      new THREE.SphereGeometry(0.5, 10, 8),
+      skinMat
+    );
+    hip.scale.set(1, 1.3, 1.1);
+    legGroup.add(hip);
+
+    // Muslo
+    const thigh = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.35, 1.0, 8, 10),
+      skinMat
+    );
+    thigh.position.set(0, -0.6, 0);
+    legGroup.add(thigh);
+
+    // Pantorrilla (articulada)
+    const shin = new THREE.Group();
+    const shinMesh = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.28, 0.7, 6, 8),
+      skinMat
+    );
+    shin.add(shinMesh);
+
+    // Pie trasero
+    const foot = new THREE.Mesh(
+      new THREE.BoxGeometry(0.45, 0.18, 0.6),
+      skinMat
+    );
+    foot.position.set(0, -0.5, 0.15);
+    shin.add(foot);
+
+    // Garras traseras
+    for (let i = 0; i < 3; i++) {
+      const claw = new THREE.Mesh(
+        new THREE.ConeGeometry(0.05, 0.15, 4),
+        darkMat
+      );
+      claw.position.set(-0.12 + i * 0.12, -0.6, 0.4);
+      claw.rotation.x = -0.35;
+      shin.add(claw);
+    }
+
+    shin.position.set(0, -1.2, 0.1);
+    legGroup.add(shin);
+    dino.userData[idx === 0 ? 'backShinL' : 'backShinR'] = shin;
+
+    legGroup.position.set(side * 1.0, 2.0, -0.8);
+    dino.add(legGroup);
+    dino.userData[idx === 0 ? 'backLegL' : 'backLegR'] = legGroup;
+  });
+
+  // ===== COLA (articulada en segmentos) =====
+  const tailSegments = [];
+  let tailParent = torso;
+
+  for (let i = 0; i < 4; i++) {
+    const segment = new THREE.Group();
+    const size = 0.45 - i * 0.08;
+    const segMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(size, 8, 6),
+      skinMat
+    );
+    segMesh.scale.set(0.85, 0.8, 1.2);
+    segment.add(segMesh);
+
+    // Pequeñas protuberancias en la cola
+    if (i > 0 && i < 3) {
+      [-1, 1].forEach(s => {
+        const bump = new THREE.Mesh(
+          new THREE.SphereGeometry(0.08, 4, 4),
+          darkMat
+        );
+        bump.position.set(s * size * 0.6, size * 0.5, 0);
+        segment.add(bump);
+      });
+    }
+
+    segment.position.set(0, 0, -0.6 - i * 0.05);
+    tailParent.add(segment);
+    tailSegments.push(segment);
+    tailParent = segment;
+  }
+  dino.userData.tailSegments = tailSegments;
+
+  // Pliegues de piel en el cuello
+  for (let i = 0; i < 3; i++) {
+    const fold = new THREE.Mesh(
+      new THREE.TorusGeometry(0.65 + i * 0.1, 0.05, 6, 12, Math.PI),
+      darkMat
+    );
+    fold.position.set(0, 2.4, 1.5 + i * 0.25);
+    fold.rotation.y = Math.PI;
+    fold.rotation.x = 0.4;
+    dino.add(fold);
+  }
 
   return dino;
 }
 
 function spawnDinosaur() {
-  const modelIndex = Math.floor(Math.random() * dinoModels.length);
-  const dino = dinoModels[modelIndex].clone();
+  // Crear dinosaurio fresco (no clonar) para mantener referencias de articulaciones
+  const dinoCreators = [createTRex, createRaptor, createTriceratops];
+  const creatorIndex = Math.floor(Math.random() * dinoCreators.length);
+  const dino = dinoCreators[creatorIndex]();
 
   // Spawn más cerca para más inmersión
   const startX = (Math.random() - 0.5) * 20;
@@ -1238,23 +1646,106 @@ function updateDinosaurs(time) {
 
     // Posición con leve balanceo natural
     dino.position.lerpVectors(data.startPos, data.endPos, eased);
-    dino.position.x += Math.sin(elapsed * 0.003) * 0.5;
+    dino.position.x += Math.sin(elapsed * 0.002) * 0.3;
 
     // Escala gradual
     const scale = data.startScale + (data.endScale - data.startScale) * eased;
     dino.scale.set(scale, scale, scale);
 
-    // Animación de caminar LENTA Y PESADA (realista)
-    const walkSpeed = 0.008;
+    // Ciclo de caminar
+    const walkSpeed = 0.006;
     const walkCycle = Math.sin(elapsed * walkSpeed + data.legPhase);
-    dino.position.y = Math.abs(walkCycle) * 0.3 * scale;
+    const walkCycle2 = Math.cos(elapsed * walkSpeed + data.legPhase);
 
-    // Movimiento de cabeza suave pero intimidante
-    const headBob = Math.sin(elapsed * 0.006) * 0.08;
-    dino.rotation.x = headBob;
+    // Subir/bajar cuerpo al caminar
+    dino.position.y = Math.abs(walkCycle) * 0.15 * scale;
 
-    // Balanceo lateral natural de dinosaurio pesado
-    dino.rotation.z = Math.sin(elapsed * 0.004 + data.wobbleOffset) * 0.05;
+    // ===== ANIMACIÓN DE ARTICULACIONES =====
+    const ud = dino.userData;
+
+    // Cabeza - movimiento sutil mirando
+    if (ud.head) {
+      ud.head.rotation.x = Math.sin(elapsed * 0.004) * 0.1;
+      ud.head.rotation.y = Math.sin(elapsed * 0.003) * 0.08;
+    }
+
+    // Cuello
+    if (ud.neck) {
+      ud.neck.rotation.x = Math.sin(elapsed * 0.005) * 0.05 - 0.2;
+    }
+
+    // Mandíbula - abre y cierra lentamente
+    if (ud.jaw) {
+      ud.jaw.rotation.x = Math.sin(elapsed * 0.003) * 0.15 + 0.1;
+    }
+
+    // Piernas - caminar alternado
+    if (ud.legL) {
+      ud.legL.rotation.x = walkCycle * 0.4;
+    }
+    if (ud.legR) {
+      ud.legR.rotation.x = walkCycle2 * 0.4;
+    }
+    if (ud.shinL) {
+      ud.shinL.rotation.x = Math.max(0, walkCycle) * 0.3;
+    }
+    if (ud.shinR) {
+      ud.shinR.rotation.x = Math.max(0, walkCycle2) * 0.3;
+    }
+
+    // Brazos - balanceo pequeño
+    if (ud.armL) {
+      ud.armL.rotation.x = walkCycle2 * 0.2;
+    }
+    if (ud.armR) {
+      ud.armR.rotation.x = walkCycle * 0.2;
+    }
+
+    // Cola - ondulación
+    if (ud.tailSegments) {
+      ud.tailSegments.forEach((seg, i) => {
+        seg.rotation.y = Math.sin(elapsed * 0.004 + i * 0.5) * 0.15;
+        seg.rotation.x = Math.sin(elapsed * 0.003 + i * 0.3) * 0.05;
+      });
+    }
+
+    // ===== TRICERATOPS - 4 patas articuladas =====
+    // Patas delanteras
+    if (ud.frontLegL) {
+      ud.frontLegL.rotation.x = walkCycle * 0.25;
+    }
+    if (ud.frontLegR) {
+      ud.frontLegR.rotation.x = walkCycle2 * 0.25;
+    }
+    if (ud.frontLegLowerL) {
+      ud.frontLegLowerL.rotation.x = Math.max(0, walkCycle) * 0.2;
+    }
+    if (ud.frontLegLowerR) {
+      ud.frontLegLowerR.rotation.x = Math.max(0, walkCycle2) * 0.2;
+    }
+
+    // Patas traseras
+    if (ud.backLegL) {
+      ud.backLegL.rotation.x = walkCycle2 * 0.3;
+    }
+    if (ud.backLegR) {
+      ud.backLegR.rotation.x = walkCycle * 0.3;
+    }
+    if (ud.backShinL) {
+      ud.backShinL.rotation.x = Math.max(0, walkCycle2) * 0.25;
+    }
+    if (ud.backShinR) {
+      ud.backShinR.rotation.x = Math.max(0, walkCycle) * 0.25;
+    }
+
+    // Cresta (frill) - vibra sutilmente cuando camina
+    if (ud.frill) {
+      ud.frill.rotation.z = Math.sin(elapsed * 0.005) * 0.03;
+      ud.frill.rotation.x = -0.5 + Math.sin(elapsed * 0.004) * 0.02;
+    }
+
+    // Balanceo lateral del cuerpo
+    dino.rotation.z = Math.sin(elapsed * 0.003 + data.wobbleOffset) * 0.03;
 
     // RUGIDO cuando están cerca (efecto visual)
     if (progress > 0.3 && !data.hasRoared) {
