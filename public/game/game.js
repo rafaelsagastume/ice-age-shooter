@@ -157,10 +157,10 @@ function init() {
   // Loop
   animate();
 
-  // Spawner - más frecuente para más acción
+  // Spawner - lento para niños pequeños
   setInterval(() => {
     if (gameStarted && dinoModels.length > 0) spawnDinosaur();
-  }, 1800);
+  }, 3500);
 }
 
 // ==================== CIELO ====================
@@ -705,17 +705,25 @@ function createTRex() {
   const dino = new THREE.Group();
   dino.userData.type = 'trex';
 
-  const skinColor = 0x2d5a27;
-  const bellyColor = 0x4a7a3f;
+  // Colores más realistas de reptil
+  const skinColor = 0x3d4a32;
+  const bellyColor = 0x5a6b4a;
+  const darkColor = 0x2a3322;
 
   const skinMat = new THREE.MeshStandardMaterial({
     color: skinColor,
-    roughness: 0.8,
+    roughness: 0.9,
+    metalness: 0.1,
     flatShading: true
   });
   const bellyMat = new THREE.MeshStandardMaterial({
     color: bellyColor,
-    roughness: 0.8
+    roughness: 0.85
+  });
+  const darkMat = new THREE.MeshStandardMaterial({
+    color: darkColor,
+    roughness: 0.95,
+    flatShading: true
   });
 
   // Cuerpo principal
@@ -762,28 +770,46 @@ function createTRex() {
   lowerJaw.position.set(0, 3.3, 2.8);
   dino.add(lowerJaw);
 
-  // Dientes
-  const toothMat = new THREE.MeshStandardMaterial({ color: 0xfffff0 });
+  // Dientes GRANDES Y AMENAZANTES
+  const toothMat = new THREE.MeshStandardMaterial({
+    color: 0xfffff0,
+    emissive: 0x222211,
+    emissiveIntensity: 0.1
+  });
+  // Dientes superiores
+  for (let i = 0; i < 10; i++) {
+    const tooth = new THREE.Mesh(
+      new THREE.ConeGeometry(0.1, 0.4 + Math.random() * 0.15, 4),
+      toothMat
+    );
+    tooth.position.set(-0.5 + i * 0.11, 3.5, 3.5);
+    tooth.rotation.x = Math.PI;
+    dino.add(tooth);
+  }
+  // Dientes inferiores
   for (let i = 0; i < 8; i++) {
     const tooth = new THREE.Mesh(
       new THREE.ConeGeometry(0.08, 0.3, 4),
       toothMat
     );
-    tooth.position.set(-0.4 + i * 0.11, 3.55, 3.4);
-    tooth.rotation.x = Math.PI;
+    tooth.position.set(-0.4 + i * 0.11, 3.35, 3.3);
     dino.add(tooth);
   }
 
-  // Ojos
-  const eyeMat = new THREE.MeshStandardMaterial({ color: 0xffff00, emissive: 0x444400 });
+  // Ojos FEROCES con brillo rojo
+  const eyeMat = new THREE.MeshStandardMaterial({
+    color: 0xff3300,
+    emissive: 0xff0000,
+    emissiveIntensity: 0.8
+  });
   const pupilMat = new THREE.MeshStandardMaterial({ color: 0x000000 });
 
   [-0.5, 0.5].forEach(side => {
-    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 12), eyeMat);
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.22, 12, 12), eyeMat);
     eye.position.set(side, 4.3, 2.8);
     dino.add(eye);
 
-    const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), pupilMat);
+    const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), pupilMat);
     pupil.position.set(side, 4.3, 3);
     dino.add(pupil);
   });
@@ -834,16 +860,43 @@ function createTRex() {
   tail.castShadow = true;
   dino.add(tail);
 
-  // Escamas decorativas en la espalda
-  for (let i = 0; i < 6; i++) {
+  // Escamas/crestas en la espalda (más realistas)
+  for (let i = 0; i < 10; i++) {
     const spike = new THREE.Mesh(
-      new THREE.ConeGeometry(0.15, 0.4, 4),
-      skinMat.clone()
+      new THREE.ConeGeometry(0.12 + i * 0.02, 0.3 + Math.sin(i * 0.8) * 0.15, 4),
+      darkMat.clone()
     );
-    spike.material.color.setHex(0x1a3a17);
-    spike.position.set(0, 3.2 + Math.sin(i * 0.5) * 0.2, -0.5 - i * 0.6);
-    spike.rotation.x = -0.3;
+    spike.position.set(0, 3.3 + Math.sin(i * 0.4) * 0.15, -0.3 - i * 0.5);
+    spike.rotation.x = -0.2;
     dino.add(spike);
+  }
+
+  // Textura de escamas en el cuerpo (protuberancias)
+  for (let i = 0; i < 15; i++) {
+    const bump = new THREE.Mesh(
+      new THREE.SphereGeometry(0.15 + Math.random() * 0.1, 4, 4),
+      darkMat
+    );
+    const angle = Math.random() * Math.PI * 2;
+    const height = 2 + Math.random() * 1.5;
+    bump.position.set(
+      Math.cos(angle) * 1.2,
+      height,
+      Math.sin(angle) * 0.8 - 0.5
+    );
+    bump.scale.y = 0.5;
+    dino.add(bump);
+  }
+
+  // Arrugas en el cuello
+  for (let i = 0; i < 3; i++) {
+    const wrinkle = new THREE.Mesh(
+      new THREE.TorusGeometry(0.5 - i * 0.1, 0.05, 4, 12),
+      darkMat
+    );
+    wrinkle.position.set(0, 3.8 - i * 0.2, 1.5);
+    wrinkle.rotation.y = Math.PI / 2;
+    dino.add(wrinkle);
   }
 
   return dino;
@@ -853,9 +906,16 @@ function createRaptor() {
   const dino = new THREE.Group();
   dino.userData.type = 'raptor';
 
+  // Colores de raptor realista (marrón con rayas)
   const skinMat = new THREE.MeshStandardMaterial({
-    color: 0x8b4513,
-    roughness: 0.7,
+    color: 0x6b4423,
+    roughness: 0.8,
+    metalness: 0.05,
+    flatShading: true
+  });
+  const stripeMat = new THREE.MeshStandardMaterial({
+    color: 0x3d2815,
+    roughness: 0.85,
     flatShading: true
   });
 
@@ -879,10 +939,14 @@ function createRaptor() {
   head.castShadow = true;
   dino.add(head);
 
-  // Ojos
-  const eyeMat = new THREE.MeshStandardMaterial({ color: 0xff6600, emissive: 0x331100 });
+  // Ojos FEROCES del raptor
+  const eyeMat = new THREE.MeshStandardMaterial({
+    color: 0xff4400,
+    emissive: 0xff2200,
+    emissiveIntensity: 1.0
+  });
   [-0.2, 0.2].forEach(side => {
-    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), eyeMat);
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.14, 8, 8), eyeMat);
     eye.position.set(side, 2.6, 1.8);
     dino.add(eye);
   });
@@ -921,20 +985,61 @@ function createRaptor() {
   tail.castShadow = true;
   dino.add(tail);
 
-  // Plumas decorativas
+  // Plumas realistas en la cabeza y brazos
   const featherMat = new THREE.MeshStandardMaterial({
-    color: 0xcc4400,
+    color: 0xaa3300,
+    roughness: 0.7,
     side: THREE.DoubleSide
   });
-  for (let i = 0; i < 4; i++) {
+
+  // Cresta de plumas en la cabeza
+  for (let i = 0; i < 5; i++) {
     const feather = new THREE.Mesh(
-      new THREE.PlaneGeometry(0.3, 0.6),
+      new THREE.PlaneGeometry(0.15, 0.4 + i * 0.05),
       featherMat
     );
-    feather.position.set(0, 2.2 - i * 0.3, -0.3 - i * 0.4);
-    feather.rotation.x = -0.5;
+    feather.position.set(0, 2.7 - i * 0.08, 1.2 - i * 0.15);
+    feather.rotation.x = -0.3;
     dino.add(feather);
   }
+
+  // Plumas en los brazos
+  [-0.4, 0.4].forEach(side => {
+    for (let i = 0; i < 3; i++) {
+      const feather = new THREE.Mesh(
+        new THREE.PlaneGeometry(0.2, 0.5),
+        featherMat.clone()
+      );
+      feather.position.set(side, 1.8 - i * 0.2, 0.5 - i * 0.1);
+      feather.rotation.z = side > 0 ? -0.5 : 0.5;
+      feather.rotation.x = -0.3;
+      dino.add(feather);
+    }
+  });
+
+  // Rayas en el cuerpo
+  for (let i = 0; i < 4; i++) {
+    const stripe = new THREE.Mesh(
+      new THREE.BoxGeometry(0.8, 0.08, 0.3),
+      stripeMat
+    );
+    stripe.position.set(0, 1.6 + i * 0.25, -0.2 - i * 0.2);
+    stripe.rotation.x = 0.3;
+    dino.add(stripe);
+  }
+
+  // Garras más realistas
+  const clawMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.3 });
+  [-0.3, 0.3].forEach(side => {
+    // Garra grande característica del raptor
+    const bigClaw = new THREE.Mesh(
+      new THREE.ConeGeometry(0.06, 0.5, 4),
+      clawMat
+    );
+    bigClaw.position.set(side, 0.15, 0.3);
+    bigClaw.rotation.x = -Math.PI / 3;
+    dino.add(bigClaw);
+  });
 
   return dino;
 }
@@ -943,9 +1048,16 @@ function createTriceratops() {
   const dino = new THREE.Group();
   dino.userData.type = 'triceratops';
 
+  // Colores realistas de triceratops
   const skinMat = new THREE.MeshStandardMaterial({
-    color: 0x6b8e23,
-    roughness: 0.85,
+    color: 0x5a7a33,
+    roughness: 0.9,
+    metalness: 0.05,
+    flatShading: true
+  });
+  const detailMat = new THREE.MeshStandardMaterial({
+    color: 0x3d5a22,
+    roughness: 0.95,
     flatShading: true
   });
 
@@ -969,16 +1081,62 @@ function createTriceratops() {
   head.castShadow = true;
   dino.add(head);
 
-  // Cresta
+  // Cresta grande y detallada
   const frill = new THREE.Mesh(
-    new THREE.CircleGeometry(1.5, 8),
+    new THREE.CircleGeometry(1.8, 12),
     skinMat.clone()
   );
-  frill.material.color.setHex(0x8fbc8f);
-  frill.position.set(0, 3.2, 1.8);
-  frill.rotation.x = -0.3;
+  frill.material.color.setHex(0x7a9a5f);
+  frill.position.set(0, 3.4, 1.6);
+  frill.rotation.x = -0.4;
   frill.material.side = THREE.DoubleSide;
   dino.add(frill);
+
+  // Picos alrededor de la cresta
+  for (let i = 0; i < 10; i++) {
+    const angle = (i / 10) * Math.PI + Math.PI / 2;
+    const spike = new THREE.Mesh(
+      new THREE.ConeGeometry(0.12, 0.4, 4),
+      detailMat
+    );
+    spike.position.set(
+      Math.cos(angle) * 1.6,
+      3.4 + Math.sin(angle) * 1.2,
+      1.5
+    );
+    spike.rotation.x = -0.4;
+    spike.rotation.z = -angle + Math.PI / 2;
+    dino.add(spike);
+  }
+
+  // Textura en la cresta (manchas)
+  for (let i = 0; i < 6; i++) {
+    const spot = new THREE.Mesh(
+      new THREE.CircleGeometry(0.2 + Math.random() * 0.15, 6),
+      detailMat
+    );
+    const angle = Math.random() * Math.PI;
+    const dist = 0.5 + Math.random() * 0.8;
+    spot.position.set(
+      Math.cos(angle) * dist,
+      3.4 + Math.sin(angle) * dist * 0.8,
+      1.55
+    );
+    spot.rotation.x = -0.4;
+    dino.add(spot);
+  }
+
+  // Ojos FEROCES del triceratops
+  const eyeMat = new THREE.MeshStandardMaterial({
+    color: 0xff5500,
+    emissive: 0xff3300,
+    emissiveIntensity: 0.7
+  });
+  [-0.6, 0.6].forEach(side => {
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.15, 8, 8), eyeMat);
+    eye.position.set(side, 2.8, 2.8);
+    dino.add(eye);
+  });
 
   // Cuernos
   const hornMat = new THREE.MeshStandardMaterial({ color: 0xf5f5dc });
@@ -1051,13 +1209,15 @@ function spawnDinosaur() {
   dino.userData = {
     ...dino.userData,
     startTime: Date.now(),
-    duration: 4000 + Math.random() * 2500, // Más rápido
+    duration: 8000 + Math.random() * 4000, // LENTO para niños pequeños
     startPos: new THREE.Vector3(startX, 0, startZ),
-    endPos: new THREE.Vector3((Math.random() - 0.5) * 25, 0, 12), // Terminan más cerca
+    endPos: new THREE.Vector3((Math.random() - 0.5) * 20, 0, 10),
     startScale: 0.4,
-    endScale: 2.8, // Más grandes al final
+    endScale: 3.0,
     wobbleOffset: Math.random() * Math.PI * 2,
-    legPhase: Math.random() * Math.PI * 2
+    legPhase: Math.random() * Math.PI * 2,
+    roarTime: Math.random() * 2000,
+    hasRoared: false
   };
 
   scene.add(dino);
@@ -1072,28 +1232,140 @@ function updateDinosaurs(time) {
     const data = dino.userData;
     const elapsed = now - data.startTime;
     const progress = Math.min(elapsed / data.duration, 1);
-    const eased = progress * progress;
 
-    // Posición
+    // Movimiento SUAVE Y CONSTANTE para niños
+    const eased = progress;
+
+    // Posición con leve balanceo natural
     dino.position.lerpVectors(data.startPos, data.endPos, eased);
+    dino.position.x += Math.sin(elapsed * 0.003) * 0.5;
 
-    // Escala
+    // Escala gradual
     const scale = data.startScale + (data.endScale - data.startScale) * eased;
     dino.scale.set(scale, scale, scale);
 
-    // Animación de caminar
-    const walkCycle = Math.sin(elapsed * 0.012 + data.legPhase);
+    // Animación de caminar LENTA Y PESADA (realista)
+    const walkSpeed = 0.008;
+    const walkCycle = Math.sin(elapsed * walkSpeed + data.legPhase);
     dino.position.y = Math.abs(walkCycle) * 0.3 * scale;
-    dino.rotation.z = Math.sin(elapsed * 0.01 + data.wobbleOffset) * 0.08;
 
-    // Mirar hacia la cámara
+    // Movimiento de cabeza suave pero intimidante
+    const headBob = Math.sin(elapsed * 0.006) * 0.08;
+    dino.rotation.x = headBob;
+
+    // Balanceo lateral natural de dinosaurio pesado
+    dino.rotation.z = Math.sin(elapsed * 0.004 + data.wobbleOffset) * 0.05;
+
+    // RUGIDO cuando están cerca (efecto visual)
+    if (progress > 0.3 && !data.hasRoared) {
+      data.hasRoared = true;
+      showRoarEffect(dino.position.clone());
+    }
+
+    // Efecto de PELIGRO cuando están MUY cerca
+    if (progress > 0.7) {
+      // Sacudir más agresivamente
+      dino.rotation.z += Math.sin(elapsed * 0.05) * 0.1;
+
+      // Borde rojo de advertencia
+      if (progress > 0.85 && !data.dangerShown) {
+        data.dangerShown = true;
+        showDangerWarning();
+      }
+    }
+
+    // Mirar hacia la cámara con intención
     dino.lookAt(camera.position.x, dino.position.y, camera.position.z);
 
     if (progress >= 1) {
       scene.remove(dino);
       dinosaurs.splice(i, 1);
+      // Screen shake cuando escapan (¡casi te atrapan!)
+      cameraShake.intensity = 0.4;
     }
   }
+}
+
+function showRoarEffect(pos) {
+  // Ondas de sonido visual
+  const rings = new THREE.Group();
+
+  for (let i = 0; i < 3; i++) {
+    const ring = new THREE.Mesh(
+      new THREE.RingGeometry(0.5, 0.8, 16),
+      new THREE.MeshBasicMaterial({
+        color: 0xff4444,
+        transparent: true,
+        opacity: 0.6,
+        side: THREE.DoubleSide
+      })
+    );
+    ring.userData.delay = i * 100;
+    ring.userData.startTime = Date.now();
+    rings.add(ring);
+  }
+
+  rings.position.copy(pos);
+  rings.position.y += 3;
+  scene.add(rings);
+
+  const animRoar = () => {
+    const now = Date.now();
+    let allDone = true;
+
+    rings.children.forEach((ring, i) => {
+      const elapsed = now - ring.userData.startTime - ring.userData.delay;
+      if (elapsed > 0) {
+        const progress = elapsed / 500;
+        if (progress < 1) {
+          ring.scale.setScalar(1 + progress * 4);
+          ring.material.opacity = 0.6 * (1 - progress);
+          ring.lookAt(camera.position);
+          allDone = false;
+        }
+      } else {
+        allDone = false;
+      }
+    });
+
+    if (!allDone) {
+      requestAnimationFrame(animRoar);
+    } else {
+      scene.remove(rings);
+    }
+  };
+  animRoar();
+
+  // Mini camera shake con el rugido
+  cameraShake.intensity = Math.max(cameraShake.intensity, 0.15);
+}
+
+function showDangerWarning() {
+  const warning = document.createElement('div');
+  warning.style.cssText = `
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 997;
+    border: 8px solid rgba(255, 0, 0, 0.6);
+    animation: dangerPulse 0.3s ease-out;
+    box-shadow: inset 0 0 100px rgba(255, 0, 0, 0.3);
+  `;
+
+  if (!document.getElementById('danger-styles')) {
+    const style = document.createElement('style');
+    style.id = 'danger-styles';
+    style.textContent = `
+      @keyframes dangerPulse {
+        0% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  document.body.appendChild(warning);
+  setTimeout(() => warning.remove(), 300);
 }
 
 // ==================== UI & GAMEPLAY ====================
