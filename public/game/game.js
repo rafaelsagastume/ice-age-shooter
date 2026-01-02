@@ -366,6 +366,26 @@ function createPalmTrees() {
       createSimpleJungleTree(x, z, 0.6 + Math.random() * 0.5);
     }
   }
+
+  // Árboles MUY CERCA del jugador (a los lados)
+  for (let i = 0; i < 12; i++) {
+    const side = Math.random() > 0.5 ? 1 : -1;
+    const x = side * (6 + Math.random() * 8);
+    const z = 5 - Math.random() * 25; // Cerca del jugador (z=8)
+    if (Math.random() > 0.5) {
+      createSimplePalmTree(x, z, 0.7 + Math.random() * 0.5);
+    } else {
+      createSimpleJungleTree(x, z, 0.8 + Math.random() * 0.5);
+    }
+  }
+
+  // Arbustos cerca del jugador
+  for (let i = 0; i < 10; i++) {
+    const side = Math.random() > 0.5 ? 1 : -1;
+    const x = side * (5 + Math.random() * 6);
+    const z = 6 - Math.random() * 20;
+    createSimpleFern(x, z, 0.6 + Math.random() * 0.4);
+  }
 }
 
 // VERSIONES SIMPLIFICADAS DE ÁRBOLES PARA MEJOR RENDIMIENTO
