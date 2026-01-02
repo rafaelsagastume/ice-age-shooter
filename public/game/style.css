@@ -1,0 +1,141 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #1a1a2e;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#game-container {
+  width: 100vw;
+  height: 100vh;
+}
+
+#game-container canvas {
+  display: block;
+}
+
+#room-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(26, 26, 46, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  color: white;
+  text-align: center;
+}
+
+#room-overlay.hidden {
+  display: none;
+}
+
+#room-overlay h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  color: #4ecca3;
+}
+
+#room-overlay p {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #a0a0a0;
+}
+
+#room-code {
+  font-size: 5rem;
+  font-weight: bold;
+  letter-spacing: 0.5rem;
+  color: #ffd700;
+  background: rgba(255, 215, 0, 0.1);
+  padding: 1rem 2rem;
+  border-radius: 1rem;
+  border: 3px solid #ffd700;
+  margin: 1rem 0;
+}
+
+.instructions {
+  font-size: 1rem !important;
+  color: #888 !important;
+  line-height: 1.6;
+}
+
+.instructions strong {
+  color: #4ecca3;
+}
+
+#connection-status {
+  margin-top: 2rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+#connection-status.connected {
+  background: rgba(78, 204, 163, 0.2);
+  color: #4ecca3;
+}
+
+#qr-container {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: white;
+  border-radius: 1rem;
+}
+
+#qr-code {
+  width: 180px;
+  height: 180px;
+  display: block;
+}
+
+#copy-link-btn {
+  margin-top: 1rem;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #1a1a2e;
+  background: #4ecca3;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.2s;
+}
+
+#copy-link-btn:hover {
+  background: #3db892;
+}
+
+#copy-link-btn:active {
+  transform: scale(0.95);
+}
+
+#copy-link-btn.copied {
+  background: #ffd700;
+}
+
+#skip-btn {
+  margin-top: 1.5rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  color: #888;
+  background: transparent;
+  border: 1px solid #444;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#skip-btn:hover {
+  color: #fff;
+  border-color: #888;
+}

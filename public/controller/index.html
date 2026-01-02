@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Control - Ice Age Shooter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="connect-screen">
+    <h1>Ice Age Shooter</h1>
+    <p>Ingresa el código de la sala</p>
+    <input type="text" id="room-input" maxlength="4" pattern="[0-9]*" inputmode="numeric" placeholder="0000">
+    <button id="connect-btn">Conectar</button>
+    <p id="error-msg"></p>
+  </div>
+
+  <div id="controller-screen" class="hidden">
+    <div id="status-bar">
+      <span id="connection-indicator"></span>
+      <span>Conectado</span>
+    </div>
+    <div id="gyro-debug">
+      <div>β: <span id="beta-val">0</span>°</div>
+      <div>γ: <span id="gamma-val">0</span>°</div>
+      <div id="debug-status">Estado: iniciando...</div>
+    </div>
+    <div id="aim-area">
+      <div id="aim-dot"></div>
+      <p>Arrastra para apuntar (fallback)</p>
+    </div>
+    <button id="shoot-btn">DISPARAR</button>
+    <p id="gyro-warning" class="hidden">
+      Permite el acceso al sensor de movimiento
+    </p>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="controller.js"></script>
+</body>
+</html>
